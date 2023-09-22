@@ -258,3 +258,27 @@ const RegisterPage = () => {
 
 export default RegisterPage;
 
+
+
+import React, {useContext,useState} from "react";
+import { AppContext } from '../Context/App.context';
+import { useNavigate } from "react-router-dom";
+
+const ProfilePage = () => {
+    const { user,handleUserInfo } = useContext(AppContext);
+    const navigate=useNavigate();
+    const handleRegister =()=>{
+        navigate('/register');
+    }
+
+    return (    
+        <div>
+            <h1> Admin Profile Page</h1>            
+            <p> Hello {user.userEmail}</p>
+            <button type="submit" onClick={handleRegister}> Register </button>
+            <button onClick={() => { handleUserInfo(null) }}> Logout </button>
+        </div>            
+    )
+}
+
+export default ProfilePage;
