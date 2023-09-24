@@ -1047,3 +1047,40 @@ const Success = () => {
     )
 }
 export default Success;
+
+
+
+
+import React, { useContext } from "react";
+import { AppContext } from "../Context/App.context";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+const Success = () => {
+  const { user, handleUserInfo } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    handleUserInfo(null);
+    navigate("/");
+  };
+
+  const { message, name } = useParams();
+
+  return (
+    <div className="container mt-5">
+      <div className="card">
+        <div className="card-body">
+          <h1 className="card-title"> Success! </h1>
+          <p className="card-text">Customer Name: {name}</p>
+          <p className="card-text">Account Number: {message}</p>
+          <button className="btn btn-primary" onClick={handleSubmit}>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Success;
