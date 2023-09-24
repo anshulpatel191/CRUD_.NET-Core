@@ -633,3 +633,121 @@ const RegisterPage = () => {
 }
 
 export default RegisterPage;
+
+
+
+import React, { useContext, useState } from "react";
+import axios from "axios";
+import { AppContext } from '../Context/App.context';
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS for styling
+
+const RegisterPage = () => {
+  const [name, setName] = React.useState('');
+  const [dob, setDob] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [custpassword, setPwd] = React.useState('');
+  const [address, setAddress] = React.useState('');
+  const [city, setCity] = React.useState('');
+  const [aadhaar, setAadhaar] = React.useState('');
+  const [passwordType, setPasswordType] = React.useState('password');
+  const [Error, setError] = React.useState('');
+  const { user, setUser } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  const handleName = (event) => {
+    setName(event.target.value);
+  }
+
+  const handleDob = (event) => {
+    setDob(event.target.value);
+  }
+
+  const handlePhone = (event) => {
+    setPhone(event.target.value);
+  }
+
+  const handleAddress = (event) => {
+    setAddress(event.target.value);
+  }
+
+  const handleCity = (event) => {
+    setCity(event.target.value);
+  }
+
+  const handleAadhaar = (event) => {
+    setAadhaar(event.target.value);
+  }
+
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  }
+
+  const handlePwd = (event) => {
+    setPwd(event.target.value);
+  }
+
+  const togglePasswordVisibility = () => {
+    setPasswordType(passwordType === 'password' ? 'text' : 'password');
+  }
+
+  const handleRegister = async (event) => {
+    event.preventDefault();
+    const res1 = {
+      "customerName": name,
+      "dob": dob,
+      "phoneNumber": phone,
+      "email": email,
+      "customerAddress": address,
+      "city": city,
+      "aadhaarNumber": aadhaar,
+    };
+    const res2 = {
+      "userEmail": email,
+      "userPassword": custpassword,
+      "userRole": "CUSTOMER"
+    };
+    const res = { "user": res1, "auth": res2 };
+
+    try {
+      const response = await axios.post('CustomerRegistration', res);
+      // Assuming the response contains a success message
+      const successMessage = response.data.message;
+
+      // Show a success toast notification
+      toast.success(successMessage, {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000, // Auto close the toast after 3 seconds
+      });
+      
+      // You can also navigate to a different page or perform other actions here
+
+    } catch (error) {
+      setError(error.message);
+      // Show an error toast notification
+      toast.error("Registration failed. Please try again.", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 3000, // Auto close the toast after 3 seconds
+      });
+    }
+  }
+
+  return (
+    <div className="container">
+      <form>
+        <h1 className="mt-4">New Customer Registration Page</h1>
+        {/* ... (your form fields) */}
+        <div className="form-group text-center">
+          <button type="submit" className="btn btn-primary" onClick={handleRegister}>Register</button>
+        </div>
+      </form>
+      {/* Add the ToastContainer component to display toasts */}
+      <ToastContainer />
+    </div>
+  )
+}
+
+export default RegisterPage;
+
