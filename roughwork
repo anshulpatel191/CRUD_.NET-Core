@@ -472,3 +472,20 @@ Error
 
 
 settle.js:19  Uncaught (in promise) AxiosError {message: 'Request failed with status code 500', name: 'AxiosError', code: 'ERR_BAD_RESPONSE', config: {…}, request: XMLHttpRequest, …}code: "ERR_BAD_RESPONSE"config: {transitional: {…}, adapter: 'xhr', transformRequest: Array(1), transformResponse: Array(1), timeout: 0, …}message: "Request failed with status code 500"name: "AxiosError"request: XMLHttpRequest {onreadystatechange: null, readyState: 4, timeout: 0, withCredentials: false, upload: XMLHttpRequestUpload, …}response: {data: 'Microsoft.EntityFrameworkCore.DbUpdateException: A…te\r\nsec-fetch-mode: cors\r\nsec-fetch-dest: empty\r\n', status: 500, statusText: '', headers: AxiosHeaders, config: {…}, …}stack: "AxiosError: Request failed with status code 500\n    at settle (http://localhost:3000/static/js/bundle.js:67772:12)\n    at XMLHttpRequest.onloadend (http://localhost:3000/static/js/bundle.js:66458:66)"[[Prototype]]: Error
+
+
+{
+  "user": {
+    "customerName": "GpfSQyqSA",
+    "dob": "2023-09-29T06:47:31.538Z",
+    "phoneNumber": "2860975778",
+    "email": "use@example.com",
+    "customerAddress": "string",
+    "city": "string",
+    "aadhaarNumber": "783568839801"},
+  "auth": {
+    "userEmail": "use@example.com",
+    "userPassword": "stringstringstri",
+    "userRole": "CUSTOMER"
+   }
+}
