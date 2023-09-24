@@ -1021,3 +1021,29 @@ const NavbarWithNavigate = () => {
   return <NavbarComponent navigate={navigate} />;
 };
 
+import React, {useContext} from "react";
+import { AppContext } from "../Context/App.context";
+import { useNavigate } from "react-router-dom";
+import {useParams} from 'react-router-dom';
+
+const Success = () => {    
+    const { user,handleUserInfo } = useContext(AppContext);
+    const navigate = useNavigate();
+    const handleSubmit = () =>{
+         handleUserInfo(null);
+        navigate('/');
+    }
+    const {message, name} = useParams();
+    
+    return (
+        <div>
+            <h1> Success! </h1>
+            <p>Message : {message}</p>
+            <p>Nmae : {name}</p>
+
+            {/*button onClick={handleSubmit}> Logout </button>*/}
+            <button onClick={handleSubmit }> Logout </button>
+        </div>
+    )
+}
+export default Success;
