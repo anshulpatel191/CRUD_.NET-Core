@@ -1,33 +1,42 @@
-import { React, useContext } from 'react';
+import React, { useContext } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import { AppContext } from "../Context/App.context";
-import { useNavigate,  } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const NavbarComponent = ({navigate}) => {
+const NavbarComponent = ({ navigate }) => {
     const { user, handleUserInfo } = useContext(AppContext);
-    const handleRegister = () =>{
+    const location = useLocation(); // Get the current location
+    const handleRegister = () => {
         navigate('/login');
     }
+
+    // Check if the current location is "/customer" (Accounts Details page)
+    const isCustomerPage = location.pathname === '/customer';
+
+    // Check if the current location is "/transfer" (Transaction page)
+    const isTransferPage = location.pathname === '/transfer';
+
     return (
         <Navbar bg="dark" variant="dark" expand="lg" >
             <Navbar.Brand style={{ padding: "10px" }}> ALEHA </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav" style={{ justifyItems: "space-between" }} >
                 <Nav className="ml-auto" style={{ display: "flex", flexGrow: 1, justifyContent: "space-between" }} >
-                    <Nav.Item >
-                        <Nav.Link>{user ? `Welcome,${user.userName}` : ""} </Nav.Link>
+                    <Nav.Item>
+                        <Nav.Link>{user ? `Welcome, ${user.userName}` : ""} </Nav.Link>
                     </Nav.Item>
-                    <Nav.Item style={{ paddingRight: "10px" }} >
-                        {user ? (
-                            <Button variant="danger" onClick={() => { handleUserInfo(null) }}>Logout</Button>
-                        ) : (
-                                // <Button variant="primary" onClick={handleRegister}>Login</Button>
-                                <Button variant="primary" >Login</Button>
-
-                        )}
-                    </Nav.Item>
+                    {isCustomerPage && user && (
+                        <Nav.Item style={{ paddingRight: "10px" }}>
+                            <Button variant="danger" onClick={() => handleUserInfo(null)}>Logout</Button>
+                        </Nav.Item>
+                    )}
+                    {isTransferPage && (
+                        <Nav.Item>
+                            <Button variant="primary" onClick={() => navigate('/customer')}>Go to Customer Page</Button>
+                        </Nav.Item>
+                    )}
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
