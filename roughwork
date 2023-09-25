@@ -1,5 +1,35 @@
 import React from 'react';
-import Navbar from 'react-bootstrap/Navbar';
+import Navbar from 'react-bootstrap/Navbar';import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTwitter, faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
+
+const FooterComponent = () => {
+  return (
+    <footer className="footer fixed-bottom bg-dark text-white">
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6">
+            {/* Your footer content */}
+          </div>
+          <div className="col-md-6 text-right">
+            <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faTwitter} size="2x" className="mr-3 text-white" />
+            </a>
+            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faFacebook} size="2x" className="mr-3 text-white" />
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+              <FontAwesomeIcon icon={faInstagram} size="2x" className="text-white" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default FooterComponent;
+
 
 const FooterComponent = () => {
     return (
