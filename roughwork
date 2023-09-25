@@ -1,44 +1,81 @@
-import React from 'react';
-import Navbar from 'react-bootstrap/Navbar';import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTwitter, faFacebook, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import React, {useContext,useState} from "react";
+import axios from "axios";
+import { AppContext } from '../Context/App.context';
+import { useNavigate } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const FooterComponent = () => {
-  return (
-    <footer className="footer fixed-bottom bg-dark text-white">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-6">
-            {/* Your footer content */}
+
+const PinChange = () => {
+    const [pinObj, setpinObj] = useState({
+        oldpin: '',
+        newpin: '',
+        confirmpin: '',
+      });
+    
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setpinObj({
+          ...pinObj,
+          [name]: value,
+        });
+      };
+    
+     
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    
+        
+        const { oldpin, newpin, confirmpin } = pinObj;
+    
+        
+        if (newpin !== confirmpin) {
+          alert('New PIN and Confirm PIN do not match.');
+        } else {
+          console.log('Form submitted with values:', pinObj);
+        }
+      };
+    
+      return (
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="oldpin">Old PIN</label>
+            <input
+              type="password"
+              id="oldpin"
+              name="oldpin"
+              value={pinObj.oldpin}
+              onChange={handleInputChange}
+            />
           </div>
-          <div className="col-md-6 text-right">
-            <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faTwitter} size="2x" className="mr-3 text-white" />
-            </a>
-            <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faFacebook} size="2x" className="mr-3 text-white" />
-            </a>
-            <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
-              <FontAwesomeIcon icon={faInstagram} size="2x" className="text-white" />
-            </a>
+          <div>
+            <label htmlFor="newpin">New PIN</label>
+            <input
+              type="password"
+              id="newpin"
+              name="newpin"
+              value={pinObj.newpin}
+              onChange={handleInputChange}
+            />
           </div>
-        </div>
-      </div>
-    </footer>
-  );
-};
-
-export default FooterComponent;
-
-
-const FooterComponent = () => {
-    return (
-        <Navbar bg="dark" variant="dark" fixed="bottom">
-            <Navbar.Text style={{ margin: "auto" }}>
-                &copy; 2023 Your Company Name
-            </Navbar.Text>
-        </Navbar>
-    );
+          <div>
+            <label htmlFor="confirmpin">Confirm PIN</label>
+            <input
+              type="password"
+              id="confirmpin"
+              name="confirmpin"
+              value={pinObj.confirmpin}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      );
 }
 
-export default FooterComponent;
+
+
+
+export default PinChange;
