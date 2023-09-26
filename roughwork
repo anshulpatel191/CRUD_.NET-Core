@@ -1,159 +1,102 @@
-import React, { useContext, useState } from "react";
-import axios from "axios";
-import { AppContext } from '../Context/App.context';
+import React, {useState} from "react";
+import { Container, Row, Col, Card, Form, Button} from 'react-bootstrap';
+import ForexCalculator from "../Components/ForexCalculator";
+import CustomerTable from "../Components/CustomerTable";
 import { useNavigate } from "react-router-dom";
-import  { authenticateUser } from "../utils/authentication";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-
-const LoginWithToken = () => {
-    const [loginobj, setLogin] = useState({ UserEmail: '', UserPassword: '' });
-    const [email, setEmail] = React.useState('');
-    const [custpassword, setpwd] = React.useState('');
-    const [Error, setError] = React.useState('');
-    const { handleUserInfo } = useContext(AppContext);
-
+const AdminDashboard = () => {
+    const [customerId, setCustomerId] = useState('');
+    const [accountId, setAccountId] = useState('');
+    const [email, setEmail] = useState('');
+    
     const navigate = useNavigate();
+    const handleCustomerIdChange = (event) => {
+      setCustomerId(event.target.value);
+    };
+  
+    const handleEmailChange = (event) => {
+      setEmail(event.target.value);
+    };
 
-    const handleEmail = (event) => {
-        setEmail(event.target.value);
+    const handleAccountIdChange = (event) => {
+        setAccountId(event.target.value);
     }
+  
+    const handleAddCustomer = () => {
+      navigate('/register');
+    };
 
-    const handlepwd = (event) => {
-        setpwd(event.target.value);
-    }
+    const handleViewCustomer = () => {
 
-    const handleSubmit = async (event) => {
-        loginobj.UserEmail = email;
-        loginobj.UserPassword = custpassword;
+    };
 
-        event.preventDefault();
-        try {
-            const response = await axios
-              .post('api/Authorization', loginobj)
+    const handleViewAccount = () => {
+      navigate('/account-dashboard');
+    };
 
-            handleUserInfo(response.data);
-            authenticateUser(response.data);
-            console.log(response.data);
+    const handleViewStatement = () => {
+      navigate('/statement');      
+    };
 
-            if (response.data.userRole === 'ADMIN') {
-                // alert("Succesful Login!");
-                 // Show a success toast notification
-          toast.success(`Succesfull Log-in!!`, {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 3000, // Auto close the toast after 3 seconds
-           
-          });
+    const handleAddAccount =  () => {
+      navigate('/account-registration');
+    };    
 
-          setTimeout(()=>{
-           navigate(`/admin-dashboard`);
-          },3050);
-                // navigate('/admin-dashboard');
-            }
-            else if (response.data.userRole === 'CUSTOMER') {
-                // alert("Succesful Login!");
-
-                toast.success(`Succesfull Log-in!!`, {
-                  position: toast.POSITION.TOP_CENTER,
-                  autoClose: 3000, // Auto close the toast after 3 seconds
-                 
-                });
-      
-                setTimeout(()=>{
-                 navigate(`/customer`);
-                },3050);
-                // navigate('/customer');
-            }
-            else {
-              toast.error(`Invalid Access`, {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: 3000, // Auto close the toast after 3 seconds
-               
-              });
-            }
-        }
-        catch (error) {
-            
-            setError(error.Message);
-            toast.error(`Error : ${error.Message}`, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: 3000, // Auto close the toast after 3 seconds
-             
-            });
-        }
-    }
+    const handleCustomerDetails =  () => {
+      navigate('/viewcustomer');
+    };
 
     return (
-        <div className="container-fluid">
-            <div className="row">
-                {/* Left Column */}
-                <div className="col-md-6 bg-primary text-center" style={{ height: "100vh" }}>
-                    <div className="d-flex flex-column align-items-center justify-content-center h-100">
-                        <h1 className="text-white mb-5">Welcome to ALEHA Bank!</h1>
-                        <h4 className="text-white">It all begins with you | ALEHA </h4>
-                    </div>
-                </div>
-
-                {/* Right Column */}
-
-            
-<div className="col-md-6" style={{ height: "100vh" }}>
-  <div className="d-flex flex-column align-items-center justify-content-center h-100">
-    <h2 className="mb-4">Sign In</h2>
-    <form style={{ width: "50%" }}>
-      <div className="form-group mb-3">
-        <input
-          type="email"
-          value={email} onChange={handleEmail}
-          className="form-control login-form-input"
-          placeholder="Username"
-          style={{
-            width: "100%",
-            height: "50px", // Increase the height
-            border: "none", // Remove border
-          }}
-        />
-      </div>
-      <div className="form-group mb-3">
-        <input
-          type="password"
-          value={custpassword} onChange={handlepwd}
-          className="form-control login-form-input"
-          placeholder="Password"
-          style={{
-            width: "100%",
-            height: "50px", // Increase the height
-            border: "none", // Remove border
-          }}
-        />
-      </div>
-      <div className="form-group text-center mb-4">
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="btn btn-primary"
-          style={{
-            width: "40%",
-            borderRadius: "50px",
-            padding: "15px 0",
-          }}
-        >
-          Login
-          
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
-
-            </div>
-            <ToastContainer/>
-        </div>
+        <Container fluid>
+        <h1>Admin Dashboard</h1>
+        <Col md={12}>
+            <Card>
+              <Card.Body>
+                <ForexCalculator/>
+              </Card.Body>
+            </Card>
+          </Col>
+        <Row style={{marginTop: "20px", marginBottom: "20px"}}>
+        <Col md={6}>
+            <Card>
+              <Card.Body className="text-center" >
+                <h2>Add a New Customer</h2>
+                
+        <Button variant="primary" onClick={handleAddCustomer}>
+          Add Customer
+        </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+    
+          <Col md={6}>
+            <Card>
+              <Card.Body className="text-center" >
+                <h2>Add a New Account</h2>
+                
+        <Button variant="primary" onClick={handleAddAccount}>
+          Add Account
+        </Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px", marginBottom: "20px"}}>
+        <Col md={12}>
+            <Card>
+              <Card.Body className="text-center" >
+                <h2>View Customer Details</h2>
+                
+        <Button variant="primary" onClick={handleCustomerDetails}>
+        View Customer
+        </Button>
+              </Card.Body>
+            </Card>
+          </Col>            
+        </Row>              
+      </Container>
     );
-
-
 }
 
-export default LoginWithToken;
+
+export default AdminDashboard;
