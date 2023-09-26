@@ -1,224 +1,159 @@
-import React, { useEffect, useState } from 'react';
-import { useContext } from "react";
-import axios from 'axios';
-import { Table, Button } from 'react-bootstrap';
-import { AppContext } from "../Context/App.context";
-import { useNavigate } from 'react-router-dom';
-import SearchBar from './SearchBar';
-
-const CustomerTable = () => {
-  const [customers, setCustomers] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const filterData = (searchTerm) => {
-    const filtered = customers.filter((item) => item.customerName.toLowerCase().includes(searchTerm.toLowerCase()));
-
-    setFilteredData(filtered);
-  }
-  const { user, handleUserInfo, setCustomerData } = useContext(AppContext);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const headers= {"Authorization" : `Bearer ${user.token}`}
-    axios.get('Customers',{headers})
-      .then((response) => {
-        setCustomers(response.data); 
-      })
-      .catch((error) => {
-        console.error('Error fetching customer data:', error);
-      });
-  }, []);
-
-  const handleViewClick = (customer) => {
-    console.log(customer);
-    setCustomerData(customer);
-        navigate(
-          '/EditCustomer'
-        )
-  };
-  
-  return (
-    <div><SearchBar filterData={filterData} />
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>Customer ID</th>
-          <th>Customer Name</th>
-          <th>View</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredData.length == 0 ? customers.map((customer) => (
-          <tr key={customer.id}>
-            <td>{customer.customerId}</td>
-            <td>{customer.customerName}</td>
-            <td>
-              <Button variant="primary" onClick={() => handleViewClick(customer)}>View</Button>
-            </td>
-          </tr>
-        )) : filteredData.map((customer) => (
-          <tr key={customer.id}>
-            <td>{customer.customerId}</td>
-            <td>{customer.customerName}</td>
-            <td>
-              <Button variant="primary" onClick={() => handleViewClick(customer)}>Edit</Button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-    </div>
-  );
-
-};
-
-export default CustomerTable;
-
-
-
-import React, { useEffect, useState } from 'react';
-import { useContext } from 'react';
-import axios from 'axios';
-import { Table, Button } from 'react-bootstrap';
+import React, { useContext, useState } from "react";
+import axios from "axios";
 import { AppContext } from '../Context/App.context';
-import { useNavigate } from 'react-router-dom';
-import SearchBar from './SearchBar';
+import { useNavigate } from "react-router-dom";
+import  { authenticateUser } from "../utils/authentication";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const CustomerTable = () => {
-  const [customers, setCustomers] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const filterData = (searchTerm) => {
-    const filtered = customers.filter((item) =>
-      item.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+
+const LoginWithToken = () => {
+    const [loginobj, setLogin] = useState({ UserEmail: '', UserPassword: '' });
+    const [email, setEmail] = React.useState('');
+    const [custpassword, setpwd] = React.useState('');
+    const [Error, setError] = React.useState('');
+    const { handleUserInfo } = useContext(AppContext);
+
+    const navigate = useNavigate();
+
+    const handleEmail = (event) => {
+        setEmail(event.target.value);
+    }
+
+    const handlepwd = (event) => {
+        setpwd(event.target.value);
+    }
+
+    const handleSubmit = async (event) => {
+        loginobj.UserEmail = email;
+        loginobj.UserPassword = custpassword;
+
+        event.preventDefault();
+        try {
+            const response = await axios
+              .post('api/Authorization', loginobj)
+
+            handleUserInfo(response.data);
+            authenticateUser(response.data);
+            console.log(response.data);
+
+            if (response.data.userRole === 'ADMIN') {
+                // alert("Succesful Login!");
+                 // Show a success toast notification
+          toast.success(`Succesfull Log-in!!`, {
+            position: toast.POSITION.TOP_CENTER,
+            autoClose: 3000, // Auto close the toast after 3 seconds
+           
+          });
+
+          setTimeout(()=>{
+           navigate(`/admin-dashboard`);
+          },3050);
+                // navigate('/admin-dashboard');
+            }
+            else if (response.data.userRole === 'CUSTOMER') {
+                // alert("Succesful Login!");
+
+                toast.success(`Succesfull Log-in!!`, {
+                  position: toast.POSITION.TOP_CENTER,
+                  autoClose: 3000, // Auto close the toast after 3 seconds
+                 
+                });
+      
+                setTimeout(()=>{
+                 navigate(`/customer`);
+                },3050);
+                // navigate('/customer');
+            }
+            else {
+              toast.error(`Invalid Access`, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 3000, // Auto close the toast after 3 seconds
+               
+              });
+            }
+        }
+        catch (error) {
+            
+            setError(error.Message);
+            toast.error(`Error : ${error.Message}`, {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 3000, // Auto close the toast after 3 seconds
+             
+            });
+        }
+    }
+
+    return (
+        <div className="container-fluid">
+            <div className="row">
+                {/* Left Column */}
+                <div className="col-md-6 bg-primary text-center" style={{ height: "100vh" }}>
+                    <div className="d-flex flex-column align-items-center justify-content-center h-100">
+                        <h1 className="text-white mb-5">Welcome to ALEHA Bank!</h1>
+                        <h4 className="text-white">It all begins with you | ALEHA </h4>
+                    </div>
+                </div>
+
+                {/* Right Column */}
+
+            
+<div className="col-md-6" style={{ height: "100vh" }}>
+  <div className="d-flex flex-column align-items-center justify-content-center h-100">
+    <h2 className="mb-4">Sign In</h2>
+    <form style={{ width: "50%" }}>
+      <div className="form-group mb-3">
+        <input
+          type="email"
+          value={email} onChange={handleEmail}
+          className="form-control login-form-input"
+          placeholder="Username"
+          style={{
+            width: "100%",
+            height: "50px", // Increase the height
+            border: "none", // Remove border
+          }}
+        />
+      </div>
+      <div className="form-group mb-3">
+        <input
+          type="password"
+          value={custpassword} onChange={handlepwd}
+          className="form-control login-form-input"
+          placeholder="Password"
+          style={{
+            width: "100%",
+            height: "50px", // Increase the height
+            border: "none", // Remove border
+          }}
+        />
+      </div>
+      <div className="form-group text-center mb-4">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="btn btn-primary"
+          style={{
+            width: "40%",
+            borderRadius: "50px",
+            padding: "15px 0",
+          }}
+        >
+          Login
+          
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+            </div>
+            <ToastContainer/>
+        </div>
     );
 
-    setFilteredData(filtered);
-  };
-  const { user, handleUserInfo, setCustomerData } = useContext(AppContext);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const headers = { Authorization: `Bearer ${user.token}` };
-    axios
-      .get('Customers', { headers })
-      .then((response) => {
-        setCustomers(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching customer data:', error);
-      });
-  }, []);
+}
 
-  const handleViewClick = (customer) => {
-    console.log(customer);
-    setCustomerData(customer);
-    navigate('/EditCustomer');
-  };
-
-  const handleDeleteClick = (customerId, customerName) => {
-    // Implement your delete logic here
-    // You can use axios or any other method to send a DELETE request to your API
-    // and pass the customerId as a parameter
-    console.log(`Deleting customer ${customerName} with ID ${customerId}`);
-  };
-
-  return (
-    <div>
-      <SearchBar filterData={filterData} />
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Customer ID</th>
-            <th>Customer Name</th>
-            <th>View</th>
-            <th>Delete</th> {/* Add a new column for delete button */}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.length === 0
-            ? customers.map((customer) => (
-                <tr key={customer.id}>
-                  <td>{customer.customerId}</td>
-                  <td>{customer.customerName}</td>
-                  <td>
-                    <Button
-                      variant="primary"
-                      onClick={() => handleViewClick(customer)}
-                    >
-                      View
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant="danger" // You can use a different variant for delete button
-                      onClick={() =>
-                        handleDeleteClick(customer.customerId, customer.customerName)
-                      }
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))
-            : filteredData.map((customer) => (
-                <tr key={customer.id}>
-                  <td>{customer.customerId}</td>
-                  <td>{customer.customerName}</td>
-                  <td>
-                    <Button
-                      variant="primary"
-                      onClick={() => handleViewClick(customer)}
-                    >
-                      Edit
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      variant="danger" // You can use a different variant for delete button
-                      onClick={() =>
-                        handleDeleteClick(customer.customerId, customer.customerName)
-                      }
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-        </tbody>
-      </Table>
-    </div>
-  );
-};
-
-export default CustomerTable;
-
-
-
-
-import axios from 'axios';
-
-// ...
-
-const handleDeleteClick = (customerId, customerName) => {
-  const requestData = {
-    customerId: customerId,
-    customerName: customerName,
-  };
-
-  // Send a DELETE request to your API with the request data in the body
-  axios
-    .delete('Your_API_URL', { data: requestData })
-    .then((response) => {
-      // Handle a successful delete response, you can show a confirmation message or update the customer list.
-      console.log(`Customer ${customerName} with ID ${customerId} deleted successfully.`);
-      
-      // You can also refresh the customer list or update the state to remove the deleted customer.
-    })
-    .catch((error) => {
-      // Handle errors, such as displaying an error message.
-      console.error(`Error deleting customer ${customerName} with ID ${customerId}:`, error);
-    });
-};
-
-// ...
-
-
+export default LoginWithToken;
