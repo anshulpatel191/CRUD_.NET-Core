@@ -1,46 +1,20 @@
-import React, {useState} from "react";
-import { Container, Row, Col, Card, Form, Button} from 'react-bootstrap';
-import CustomerTable from "../Components/CustomerTable";
-import { useNavigate } from "react-router-dom";
-
-const ViewCustomer = () => {
-    
-
-    return (
-        <Container fluid>
-        <h1>Admin Dashboard</h1>
-      
-        <Row style={{marginBottom: "20px"}}>
-          <Col md={12}>
-            <Card>
-              <Card.Body >
-                <h2 className="text-center">View Customer Details</h2>
-                <Container>
-      <CustomerTable/>
-    </Container>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-       
-      </Container>
-    );
-}
-
-
-export default ViewCustomer;
-
-
 import React, { useEffect, useState } from 'react';
 import { useContext } from "react";
 import axios from 'axios';
 import { Table, Button } from 'react-bootstrap';
 import { AppContext } from "../Context/App.context";
 import { useNavigate } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
 const CustomerTable = () => {
   const [customers, setCustomers] = useState([]);
-  const { user, handleUserInfo } = useContext(AppContext);
+  const [filteredData, setFilteredData] = useState([]);
+  const filterData = (searchTerm) => {
+    const filtered = customers.filter((item) => item.customerName.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    setFilteredData(filtered);
+  }
+  const { user, handleUserInfo, setCustomerData } = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,12 +29,15 @@ const CustomerTable = () => {
   }, []);
 
   const handleViewClick = (customer) => {
+    console.log(customer);
+    setCustomerData(customer);
         navigate(
-          '/customer'
+          '/EditCustomer'
         )
   };
   
   return (
+    <div><SearchBar filterData={filterData} />
     <Table striped bordered hover>
       <thead>
         <tr>
@@ -70,7 +47,7 @@ const CustomerTable = () => {
         </tr>
       </thead>
       <tbody>
-        {customers.map((customer) => (
+        {filteredData.length == 0 ? customers.map((customer) => (
           <tr key={customer.id}>
             <td>{customer.customerId}</td>
             <td>{customer.customerName}</td>
@@ -78,9 +55,18 @@ const CustomerTable = () => {
               <Button variant="primary" onClick={() => handleViewClick(customer)}>View</Button>
             </td>
           </tr>
+        )) : filteredData.map((customer) => (
+          <tr key={customer.id}>
+            <td>{customer.customerId}</td>
+            <td>{customer.customerName}</td>
+            <td>
+              <Button variant="primary" onClick={() => handleViewClick(customer)}>Edit</Button>
+            </td>
+          </tr>
         ))}
       </tbody>
     </Table>
+    </div>
   );
 
 };
