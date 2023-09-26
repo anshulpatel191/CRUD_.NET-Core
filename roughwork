@@ -100,3 +100,106 @@ const AdminDashboard = () => {
 
 
 export default AdminDashboard;
+
+
+import React from "react";
+import { AppContext } from "../Context/App.context";
+import { useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import AccountDropdown from "./AccountDropDown";
+import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+
+const CustomerPage = () => {
+  const [balance, setBalance] = React.useState();
+  const [selectedAccount, setSelectedAccount] = React.useState('');
+  const { user } = useContext(AppContext);
+
+  const handleBalance = () => {
+    //setBalance(100);     
+    const headers = { "Authorization": `Bearer ${user.token}` }
+    console.log(user)
+    axios.get(`AccountBalance?accnumber=${selectedAccount}`, { headers })
+      .then(response => setBalance(response.data.balance));
+  }
+
+
+
+  const navigate = useNavigate();
+
+  const handleTransfer = () => {
+    navigate("/transfer", { replace: true });
+  };
+
+  const handleStatement = () => {
+    navigate("/statement", { replace: true });
+  };
+ 
+  const handlePinChange = () => {
+    navigate("/PinChange", { replace: true });
+  };
+  
+  const handlePassword = () => {
+    navigate("/passwordchange", { replace: true });
+  };
+
+  return (
+    <Container>
+      <Row className="mt-4">
+        <Col md={12}>
+          <Card>
+            <Card.Header>
+              <h1>Account Details Page</h1>
+            </Card.Header>
+            <Card.Body>
+              {balance && (
+                <div>
+                  <p>Balance:</p>
+                  <p>{balance}</p>
+                </div>
+              )}
+              <Form.Group>
+                <Form.Label>Account Id:</Form.Label>
+                <Col xs={12} md={6} mb={3}>
+
+                  <Form.Label>Sender Account</Form.Label>
+                  <AccountDropdown selectedAccount={selectedAccount} setSelectedAccount={setSelectedAccount} />
+                </Col>
+              </Form.Group>
+              <Button variant="primary" onClick={handleBalance}>
+                Check Balance
+              </Button>
+              <hr />
+              <div>
+                <p>Click below for Transaction page:</p>
+                <Button variant="success" onClick={handleTransfer}>
+                Transaction Page
+                </Button>
+              </div>
+              <div>
+                <p>Click below for Statement page:</p>
+                <Button variant="info" onClick={handleStatement}>
+                  Statement Page
+                </Button>
+              </div>
+              <div>
+                <p>Click below for PIN change:</p>
+                <Button variant="success" onClick={handlePinChange}>
+                  PIN Change
+                </Button>
+              </div>
+              <div>
+                <p>Click below for Password change:</p>
+                <Button variant="info" onClick={handlePassword}>
+                Password change
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+};
+
+export default CustomerPage;
