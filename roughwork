@@ -193,14 +193,20 @@ export default CustomerTable;
 
 
 
+
 import axios from 'axios';
 
 // ...
 
 const handleDeleteClick = (customerId, customerName) => {
-  // Send a DELETE request to your API to delete the customer
+  const requestData = {
+    customerId: customerId,
+    customerName: customerName,
+  };
+
+  // Send a DELETE request to your API with the request data in the body
   axios
-    .delete(`Your_API_URL/${customerId}`)
+    .delete('Your_API_URL', { data: requestData })
     .then((response) => {
       // Handle a successful delete response, you can show a confirmation message or update the customer list.
       console.log(`Customer ${customerName} with ID ${customerId} deleted successfully.`);
@@ -214,4 +220,5 @@ const handleDeleteClick = (customerId, customerName) => {
 };
 
 // ...
+
 
