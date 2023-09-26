@@ -206,7 +206,6 @@ export default CustomerPage;
 
 
 
-
 import React from "react";
 import { AppContext } from "../Context/App.context";
 import { useContext } from "react";
@@ -278,9 +277,9 @@ const CustomerPage = () => {
         <Col md={6}>
           <Card>
             <Card.Body className="text-center">
-              <h2>Add a New Customer</h2>
-              <Button variant="primary" onClick={handleAddCustomer}>
-                Add Customer
+              <h2>Click below for Transaction page:</h2>
+              <Button variant="success" onClick={handleTransfer}>
+                Transaction Page
               </Button>
             </Card.Body>
           </Card>
@@ -288,21 +287,31 @@ const CustomerPage = () => {
         <Col md={6}>
           <Card>
             <Card.Body className="text-center">
-              <h2>Add a New Account</h2>
-              <Button variant="primary" onClick={handleAddAccount}>
-                Add Account
+              <h2>Click below for Statement page:</h2>
+              <Button variant="info" onClick={handleStatement}>
+                Statement Page
               </Button>
             </Card.Body>
           </Card>
         </Col>
       </Row>
       <Row className="mt-4">
-        <Col md={12}>
+        <Col md={6}>
           <Card>
             <Card.Body className="text-center">
-              <h2>View Customer Details</h2>
-              <Button variant="primary" onClick={handleCustomerDetails}>
-                View Customer
+              <h2>Click below for PIN change:</h2>
+              <Button variant="success" onClick={handlePinChange}>
+                PIN Change
+              </Button>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6}>
+          <Card>
+            <Card.Body className="text-center">
+              <h2>Click below for Password change:</h2>
+              <Button variant="info" onClick={handlePassword}>
+                Password change
               </Button>
             </Card.Body>
           </Card>
